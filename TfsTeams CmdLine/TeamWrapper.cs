@@ -2,6 +2,9 @@
 // This code released under the terms of the 
 // Microsoft Public License (MS-PL, http://opensource.org/licenses/ms-pl.html.)
 // This is sample code only, do not use in production environments
+
+using System.Reflection;
+
 namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
 {
     using System;
@@ -220,6 +223,130 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
 
             return ret;
         }
-  
+
+        public bool AddTeamAdministrator(string team, string user, out string message)
+        {
+            message = string.Empty;
+            bool ret = true;
+            TeamFoundationTeam t = this.teamService.ReadTeam(this.projectInfo.Uri, team, null);
+            TeamFoundationIdentity i = this.identityManagementService.ReadIdentity(IdentitySearchFactor.AccountName, user, MembershipQuery.Direct, ReadIdentityOptions.None);
+
+            if (t == null)
+            {
+                message = "Team [" + team + "] not found";
+                ret = false;
+            }
+
+            if (i == null)
+            {
+                message = "User [" + user + "] not found";
+                ret = false;
+            }
+
+            if (ret)
+            {
+                this.identityManagementService.AddMemberToApplicationGroup(t.Identity.Descriptor, i.Descriptor);
+                message = "User added ";
+
+                IdentityDescriptor descriptor = i.Descriptor;
+                string token = GetTeamAdminstratorsToken(t);
+
+                ISecurityService securityService = this.teamProjectCollection.GetService<ISecurityService>();
+                SecurityNamespace securityNamespace =
+                    securityService.GetSecurityNamespace(FrameworkSecurity.IdentitiesNamespaceId);
+
+                securityNamespace.SetPermissions(token, descriptor, 15, 0, false);
+            }
+
+            return ret;
+        }
+
+        public bool RemoveTeamAdministrator(string team, string user, out string message)
+        {
+            message = string.Empty;
+            bool ret = true;
+            TeamFoundationTeam t = this.teamService.ReadTeam(this.projectInfo.Uri, team, null);
+            TeamFoundationIdentity i = this.identityManagementService.ReadIdentity(IdentitySearchFactor.AccountName, user, MembershipQuery.Direct, ReadIdentityOptions.None);
+
+            if (t == null)
+            {
+                message = "Team [" + team + "] not found";
+                ret = false;
+            }
+
+            if (i == null)
+            {
+                message = "User [" + user + "] not found";
+                ret = false;
+            }
+
+            if (ret)
+            {
+                this.identityManagementService.AddMemberToApplicationGroup(t.Identity.Descriptor, i.Descriptor);
+                message = "User added ";
+
+                IdentityDescriptor descriptor = i.Descriptor;
+                string token = GetTeamAdminstratorsToken(t);
+
+                ISecurityService securityService = this.teamProjectCollection.GetService<ISecurityService>();
+                SecurityNamespace securityNamespace =
+                    securityService.GetSecurityNamespace(FrameworkSecurity.IdentitiesNamespaceId);
+
+                securityNamespace.RemovePermissions(token, descriptor, 15);
+            }
+
+            return ret;
+        }
+
+        public List<string> ListTeamAdministrators(string team, out string message)
+        {
+            // Retrieve the default team.
+            TeamFoundationTeam t = this.teamService.ReadTeam(this.projectInfo.Uri, team, null);
+            List<string> lst = null;
+            message = "";
+
+            if (t == null)
+            {
+                message = "Team [" + team + "] not found";
+            }
+            else
+            {
+                // Get security namespace for the project collection.
+                ISecurityService securityService = this.teamProjectCollection.GetService<ISecurityService>();
+                SecurityNamespace securityNamespace =
+                    securityService.GetSecurityNamespace(FrameworkSecurity.IdentitiesNamespaceId);
+
+                // Use reflection to retrieve a security token for the team.
+                var token = GetTeamAdminstratorsToken(t);
+
+                // Retrieve an ACL object for all the team members.
+                var allMembers = t.GetMembers(this.teamProjectCollection, MembershipQuery.Expanded)
+                    .Where(m => !m.IsContainer).ToArray();
+                AccessControlList acl =
+                    securityNamespace.QueryAccessControlList(token, allMembers.Select(m => m.Descriptor), true);
+
+                // Retrieve the team administrator SIDs by querying the ACL entries.
+                var entries = acl.AccessControlEntries;
+                var admins = entries.Where(e => (e.Allow & 15) == 15).Select(e => e.Descriptor.Identifier);
+
+                // Finally, retrieve the actual TeamFoundationIdentity objects from the SIDs.
+                var adminIdentities = allMembers.Where(m => admins.Contains(m.Descriptor.Identifier));
+
+                lst = new List<string>();
+                foreach (TeamFoundationIdentity i in adminIdentities)
+                {
+                    lst.Add(i.DisplayName);
+                }
+            }
+            return lst;
+        }
+
+        private static string GetTeamAdminstratorsToken(TeamFoundationTeam team)
+        {
+            MethodInfo mi = typeof(IdentityHelper).GetMethod("CreateSecurityToken",
+                BindingFlags.Static | BindingFlags.NonPublic);
+            string token = mi.Invoke(null, new object[] {team.Identity}) as string;
+            return token;
+        }
     }
 }

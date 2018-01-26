@@ -289,7 +289,6 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
                         Console.WriteLine(s);
                     }
                 }
-
             }
         }
     }
@@ -330,6 +329,78 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
                 if (!team.RemoveUser(this.GetArgument("Team"), this.GetArgument("User"), out msg))
                 {
                     Console.WriteLine(msg);
+                }
+            }
+        }
+    }
+
+    public class AddTeamAdminCommand : CommandBase
+    {
+        public AddTeamAdminCommand()
+        {
+            this.CommandName = "AddTeamAdministrator";
+            this.expectedArguments = new[] { "Collection", "TeamProject", "Team", "User" };
+        }
+
+        public override void Run()
+        {
+            using (TeamWrapper team = new TeamWrapper(new Uri(this.GetArgument("Collection")), GetArgument("TeamProject")))
+            {
+                string msg;
+                if (!team.AddTeamAdministrator(this.GetArgument("Team"), this.GetArgument("User"), out msg))
+                {
+                    Console.WriteLine(msg);
+                }
+            }
+        }
+    }
+
+    public class RemoveTeamAdminCommand : CommandBase
+    {
+        public RemoveTeamAdminCommand()
+        {
+            this.CommandName = "AddTeamAdministrator";
+            this.expectedArguments = new[] { "Collection", "TeamProject", "Team", "User" };
+        }
+
+        public override void Run()
+        {
+            using (TeamWrapper team = new TeamWrapper(new Uri(this.GetArgument("Collection")), GetArgument("TeamProject")))
+            {
+                string msg;
+                if (!team.RemoveTeamAdministrator(this.GetArgument("Team"), this.GetArgument("User"), out msg))
+                {
+                    Console.WriteLine(msg);
+                }
+            }
+        }
+    }
+
+    public class ListTeamAdminCommand : CommandBase
+    {
+        public ListTeamAdminCommand()
+        {
+            this.CommandName = "ListTeamAdministrators";
+            this.expectedArguments = new[] { "Collection", "TeamProject", "Team" };
+        }
+
+        public override void Run()
+        {
+            using (TeamWrapper team =
+                new TeamWrapper(new Uri(this.GetArgument("Collection")), GetArgument("TeamProject")))
+            {
+                string msg;
+                List<string> teamMembers = team.ListTeamAdministrators(this.GetArgument("Team"), out msg);
+                if (teamMembers == null)
+                {
+                    Console.WriteLine(msg);
+                }
+                else
+                {
+                    foreach (string s in teamMembers)
+                    {
+                        Console.WriteLine(s);
+                    }
                 }
             }
         }
