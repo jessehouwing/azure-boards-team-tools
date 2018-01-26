@@ -2,7 +2,7 @@
 
 Community TFS Team Tools is a community project based on the example code from ALM Rangers - Quick Response Sample Command line utility to manage TFS Teams http://blogs.msdn.com/b/visualstudioalm/archive/2012/06/11/quick-response-sample-command-line-utility-to-manage-team-foundation-server-teams-and-users.aspx
 
-It was put on-hold and sicne then Jesse Houwing has takan it under his wings.
+It was put on-hold and sicne then Jesse Houwing has taken it under his wings.
 
 # Content
 
