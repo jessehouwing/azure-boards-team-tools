@@ -277,7 +277,7 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
             using (TeamWrapper team = new TeamWrapper(new Uri(this.GetArgument("Collection")), GetArgument("TeamProject")))
             {
                 string msg;
-                List<string> teamMembers = team.ListTeamMembers(this.GetArgument("Team"), out msg);
+                List<string> teamMembers = team.ListMembers(this.GetArgument("Team"), out msg);
                 if (teamMembers == null)
                 {
                     Console.WriteLine(msg);
@@ -305,7 +305,7 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
             using (TeamWrapper team = new TeamWrapper(new Uri(this.GetArgument("Collection")), GetArgument("TeamProject")))
             {
                 string msg;
-                if (!team.AddUser(this.GetArgument("Team"), this.GetArgument("User"), out msg))
+                if (!team.AddMember(this.GetArgument("Team"), this.GetArgument("User"), out msg))
                 {
                     Console.WriteLine(msg);
                 }
@@ -326,7 +326,7 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
             using (TeamWrapper team = new TeamWrapper(new Uri(this.GetArgument("Collection")), GetArgument("TeamProject")))
             {
                 string msg;
-                if (!team.RemoveUser(this.GetArgument("Team"), this.GetArgument("User"), out msg))
+                if (!team.RemoveMember(this.GetArgument("Team"), this.GetArgument("User"), out msg))
                 {
                     Console.WriteLine(msg);
                 }
@@ -359,7 +359,7 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
     {
         public RemoveTeamAdminCommand()
         {
-            this.CommandName = "AddTeamAdministrator";
+            this.CommandName = "RemoveTeamAdministrator";
             this.expectedArguments = new[] { "Collection", "TeamProject", "Team", "User" };
         }
 
@@ -433,6 +433,12 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
             Console.WriteLine("");
             Console.WriteLine(@"       TfsTeams AddUser /User:<domain\user> /Team:<teamname> /collection:<collectionurl> /teamproject:<teamprojectname>");
             Console.WriteLine(@"       TfsTeams RemoveUser /User:<domain\user> /Team:<teamname> /collection:<collectionurl> /teamproject:<teamprojectname>");
+            Console.WriteLine("");
+            Console.WriteLine(@"       TfsTeams ListTeamAdministrators  /Team:<teamname> /collection:<collectionurl> /teamproject:<teamprojectname>");
+            Console.WriteLine("");
+            Console.WriteLine(@"       TfsTeams AddTeamAdministrator /User:<domain\user> /Team:<teamname> /collection:<collectionurl> /teamproject:<teamprojectname>");
+            Console.WriteLine(@"       TfsTeams RemoveTeamAdministrator /User:<domain\user> /Team:<teamname> /collection:<collectionurl> /teamproject:<teamprojectname>");
+
             Console.WriteLine(string.Empty);
         }
     }

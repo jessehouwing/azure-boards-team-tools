@@ -42,7 +42,7 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
             return (from t in teams select t.Name).ToList();
         }
 
-        public List<string> ListTeamMembers(string team, out string message)
+        public List<string> ListMembers(string team, out string message)
         {
             List<string> lst = null;
             message = "";
@@ -168,7 +168,7 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
 
             return ret;
         }
-        public bool AddUser(string team, string user, out string message)
+        public bool AddMember(string team, string user, out string message)
         {
             message = string.Empty;
             bool ret = true;
@@ -196,7 +196,7 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
             return ret;
         }
 
-        public bool RemoveUser(string team, string user, out string message)
+        public bool RemoveMember(string team, string user, out string message)
         {
             message = string.Empty;
             bool ret = true;
@@ -283,7 +283,7 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
             if (ret)
             {
                 this.identityManagementService.AddMemberToApplicationGroup(t.Identity.Descriptor, i.Descriptor);
-                message = "User added ";
+                message = "User removed ";
 
                 IdentityDescriptor descriptor = i.Descriptor;
                 string token = GetTeamAdminstratorsToken(t);
@@ -321,7 +321,7 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
 
                 // Retrieve an ACL object for all the team members.
                 var allMembers = t.GetMembers(this.teamProjectCollection, MembershipQuery.Expanded)
-                    .Where(m => !m.IsContainer).ToArray();
+                    .ToArray();
                 AccessControlList acl =
                     securityNamespace.QueryAccessControlList(token, allMembers.Select(m => m.Descriptor), true);
 
@@ -332,21 +332,14 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
                 // Finally, retrieve the actual TeamFoundationIdentity objects from the SIDs.
                 var adminIdentities = allMembers.Where(m => admins.Contains(m.Descriptor.Identifier));
 
-                lst = new List<string>();
-                foreach (TeamFoundationIdentity i in adminIdentities)
-                {
-                    lst.Add(i.DisplayName);
-                }
+                lst = adminIdentities.Select(i => i.DisplayName).ToList();
             }
             return lst;
         }
 
         private static string GetTeamAdminstratorsToken(TeamFoundationTeam team)
         {
-            MethodInfo mi = typeof(IdentityHelper).GetMethod("CreateSecurityToken",
-                BindingFlags.Static | BindingFlags.NonPublic);
-            string token = mi.Invoke(null, new object[] {team.Identity}) as string;
-            return token;
+            return IdentityHelper.CreateSecurityToken(team.Identity);
         }
     }
 }

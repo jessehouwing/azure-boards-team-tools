@@ -14,7 +14,7 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
         public static void Main(string[] args)
         {
 
-            CommandBase[] cmdList = new CommandBase[] {  new ShowUsageCommand(), new ListTeamCommand(), new CreateTeamCommand(), new DeleteTeamCommand(), new RenameTeamCommand(), new GetDefaultTeamCommand(), new SetDefaultTeamCommand(), new AddUserCommand(), new RemoveUserCommand(), new ListTeamMembersCommand() };
+            CommandBase[] cmdList = new CommandBase[] {  new ShowUsageCommand(), new ListTeamCommand(), new CreateTeamCommand(), new DeleteTeamCommand(), new RenameTeamCommand(), new GetDefaultTeamCommand(), new SetDefaultTeamCommand(), new AddUserCommand(), new RemoveUserCommand(), new ListTeamMembersCommand(), new ListTeamAdminCommand(), new AddTeamAdminCommand(), new RemoveTeamAdminCommand() };
 
             if (args == null)
             {
@@ -57,21 +57,6 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
                     Console.WriteLine("Unknown command: " + args[0]  );
                     Console.WriteLine("Try running TfsTeams /?");
                 }
-                //switch (args[0].ToUpper())
-                //{
-                //    case "LISTTEAMS":
-                //        cmd = new ListTeamCommand();
-                //        break;
-                //    case "CREATETEAM":
-                //        cmd = new CreateTeamCommand();
-                //        break;
-                //    case "ADDUSER":
-                //        cmd = new AddUserCommand();
-                //        break;
-                //    default:
-                //        cmd = new ShowUsageCommand();
-                //        break;
-                //}
             }
         }
     }
