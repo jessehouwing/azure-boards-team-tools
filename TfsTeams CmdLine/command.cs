@@ -263,6 +263,127 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
         }
     }
 
+    public class GroupToTeamCommand : CommandBase
+    {
+        public GroupToTeamCommand()
+        {
+            this.CommandName = "GroupToTeam";
+            this.expectedArguments = new[] { "Collection", "TeamProject", "Group" };
+            this.optionalArguments = new[] { "Description" };
+        }
+
+        public override void Run()
+        {
+            using (TeamWrapper team = new TeamWrapper(new Uri(this.GetArgument("Collection")), GetArgument("TeamProject")))
+            {
+                string message;
+                team.GroupToTeam(this.GetArgument("Group"), this.GetArgument("Description"), out message);
+
+                Console.WriteLine(message);
+            }
+        }
+    }
+
+    public class SetProfileImageCommand : CommandBase
+    {
+        public SetProfileImageCommand()
+        {
+            this.CommandName = "SetProfileImage";
+            this.expectedArguments = new[] { "Collection", "User", "ImagePath" };
+        }
+
+        public override void Run()
+        {
+            using (TeamWrapper team = new TeamWrapper(new Uri(this.GetArgument("Collection"))))
+            {
+                string msg;
+                if (!team.SetProfileImage(this.GetArgument("User"), this.GetArgument("ImagePath"), out msg))
+                {
+                    Console.WriteLine(msg);
+                }
+                else
+                {
+                    Console.WriteLine("Profile image set.");
+                }
+            }
+        }
+    }
+
+    public class ClearProfileImageCommand : CommandBase
+    {
+        public ClearProfileImageCommand()
+        {
+            this.CommandName = "ClearProfileImage";
+            this.expectedArguments = new[] { "Collection", "User" };
+        }
+
+        public override void Run()
+        {
+            using (TeamWrapper team = new TeamWrapper(new Uri(this.GetArgument("Collection"))))
+            {
+                string msg;
+                if (!team.ClearProfileImage(this.GetArgument("User"), out msg))
+                {
+                    Console.WriteLine(msg);
+                }
+                else
+                {
+                    Console.WriteLine("Profile image cleared.");
+                }
+            }
+        }
+    }
+
+    public class SetTeamImageCommand : CommandBase
+    {
+        public SetTeamImageCommand()
+        {
+            this.CommandName = "SetTeamImage";
+            this.expectedArguments = new[] { "Collection", "TeamProject", "Team", "ImagePath" };
+        }
+
+        public override void Run()
+        {
+            using (TeamWrapper team = new TeamWrapper(new Uri(this.GetArgument("Collection")), GetArgument("TeamProject")))
+            {
+                string msg;
+                if (!team.SetTeamImage(this.GetArgument("Team"), this.GetArgument("ImagePath"), out msg))
+                {
+                    Console.WriteLine(msg);
+                }
+                else
+                {
+                    Console.WriteLine("Team image set.");
+                }
+            }
+        }
+    }
+
+    public class ClearTeamImageCommand : CommandBase
+    {
+        public ClearTeamImageCommand()
+        {
+            this.CommandName = "ClearTeamImage";
+            this.expectedArguments = new[] { "Collection", "TeamProject", "Team" };
+        }
+
+        public override void Run()
+        {
+            using (TeamWrapper team = new TeamWrapper(new Uri(this.GetArgument("Collection")), GetArgument("TeamProject")))
+            {
+                string msg;
+                if (!team.ClearTeamImage(this.GetArgument("Team"), out msg))
+                {
+                    Console.WriteLine(msg);
+                }
+                else
+                {
+                    Console.WriteLine("Team image cleared.");
+                }
+            }
+        }
+    }
+
     public class ListTeamMembersCommand : CommandBase
     {
         public ListTeamMembersCommand()
@@ -425,6 +546,7 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
             Console.WriteLine(@"       TfsTeams CreateTeam /Team:<teamname> [/Description:<description>] /collection:<collectionurl> /teamproject:<teamprojectname>");
             Console.WriteLine(@"       TfsTeams DeleteTeam /Team:<teamname> /collection:<collectionurl> /teamproject:<teamprojectname>");
             Console.WriteLine(@"       TfsTeams RenameTeam /Team:<teamname> /NewTeamName:<newteamname> [/NewDescription:<description>] /collection:<collectionurl> /teamproject:<teamprojectname>");
+            Console.WriteLine(@"       TfsTeams GroupToTeam /Group:<teamname> [/Description:<description>] /collection:<collectionurl> /teamproject:<teamprojectname>");
             Console.WriteLine("");
             Console.WriteLine(@"       TfsTeams GetDefaultTeam /collection:<collectionurl> /teamproject:<teamprojectname>");
             Console.WriteLine(@"       TfsTeams SetDefaultTeam /Team:<teamname>  /collection:<collectionurl> /teamproject:<teamprojectname>");
@@ -433,6 +555,11 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
             Console.WriteLine("");
             Console.WriteLine(@"       TfsTeams AddUser /User:<domain\user> /Team:<teamname> /collection:<collectionurl> /teamproject:<teamprojectname>");
             Console.WriteLine(@"       TfsTeams RemoveUser /User:<domain\user> /Team:<teamname> /collection:<collectionurl> /teamproject:<teamprojectname>");
+            Console.WriteLine("");
+            Console.WriteLine(@"       TfsTeams SetProfileImage /User:<domain\user> /collection:<collectionurl> /imagepath:<pathtoprofileimage>");
+            Console.WriteLine(@"       TfsTeams ClearProfileImage /User:<domain\user> /collection:<collectionurl>");
+            Console.WriteLine(@"       TfsTeams SetTeamImage /Team:<teamname> /imagepath:<pathtoprofileimage> /collection:<collectionurl> /teamproject:<teamprojectname>");
+            Console.WriteLine(@"       TfsTeams ClearTeamImage /Team:<teamname> /collection:<collectionurl> /teamproject:<teamprojectname>");
             Console.WriteLine("");
             Console.WriteLine(@"       TfsTeams ListTeamAdministrators  /Team:<teamname> /collection:<collectionurl> /teamproject:<teamprojectname>");
             Console.WriteLine("");

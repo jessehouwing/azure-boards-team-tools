@@ -3,6 +3,9 @@
 // Microsoft Public License (MS-PL, http://opensource.org/licenses/ms-pl.html.)
 // This is sample code only, do not use in production environments
 
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Reflection;
 
 namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
@@ -20,15 +23,24 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
         private readonly TfsTeamProjectCollection teamProjectCollection;
         private readonly TfsTeamService teamService;
         private readonly ProjectInfo projectInfo;
-        private readonly IIdentityManagementService identityManagementService;
+        private readonly IIdentityManagementService2 identityManagementService;
+
+        public TeamWrapper(Uri collectionUri)
+            : this(collectionUri, null)
+        {
+        }
 
         public TeamWrapper(Uri collectionUri, string teamProjectName)
         {
             this.teamProjectCollection = new TfsTeamProjectCollection(collectionUri);
             this.teamService = this.teamProjectCollection.GetService<TfsTeamService>();
-            this.identityManagementService = this.teamProjectCollection.GetService<IIdentityManagementService>();
+            this.identityManagementService = this.teamProjectCollection.GetService<IIdentityManagementService2>();
             ICommonStructureService4 cssService = this.teamProjectCollection.GetService<ICommonStructureService4>();
-            this.projectInfo = cssService.GetProjectFromName(teamProjectName);
+
+            if (!string.IsNullOrWhiteSpace(teamProjectName))
+            {
+                this.projectInfo = cssService.GetProjectFromName(teamProjectName);
+            }
         }
 
         public void Dispose()
@@ -340,6 +352,231 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
         private static string GetTeamAdminstratorsToken(TeamFoundationTeam team)
         {
             return IdentityHelper.CreateSecurityToken(team.Identity);
+        }
+
+        public bool SetTeamImage(string team, string imagePath, out string message)
+        {
+            message = string.Empty;
+            bool ret = true;
+            TeamFoundationTeam t = this.teamService.ReadTeam(this.projectInfo.Uri, team, null);
+
+            if (t == null)
+            {
+                message = "Team [" + team + "] not found";
+                ret = false;
+            }
+
+            if (ret)
+            {
+                ret = this.SetProfileImage(t.Identity.DisplayName, imagePath, out message);
+            }
+
+            return ret;
+        }
+
+        public bool ClearTeamImage(string team, out string message)
+        {
+            message = string.Empty;
+            bool ret = true;
+            TeamFoundationTeam t = this.teamService.ReadTeam(this.projectInfo.Uri, team, null);
+
+            if (t == null)
+            {
+                message = "Team [" + team + "] not found";
+                ret = false;
+            }
+
+            if (ret)
+            {
+                ret = this.ClearProfileImage(t.Identity.DisplayName, out message);
+            }
+
+            return ret;
+        }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes", Justification = "Need to kill all errors")]
+        public bool SetProfileImage(string identity, string imagePath, out string message)
+        {
+            bool ret = true;
+            message = string.Empty;
+            byte[] image = new byte[0];
+
+            TeamFoundationIdentity i = this.identityManagementService.ReadIdentity(IdentitySearchFactor.AccountName, identity, MembershipQuery.Direct, ReadIdentityOptions.None);
+
+            if (i == null)
+            {
+                message = "User/Group [" + identity + "] not found";
+                ret = false;
+            }
+
+            if (!File.Exists(imagePath))
+            {
+                message = "File [" + imagePath + "] not found";
+                ret = false;
+            }
+
+            if (ret)
+            {
+                try
+                {
+                    byte[] rawImage = File.ReadAllBytes(imagePath);
+                    image = ConvertAndResizeImage(rawImage);
+                }
+                catch (Exception ex)
+                {
+                    message = "Could not read the profile image: " + ex.Message;
+                    ret = false;
+                }
+            }
+
+            if (ret)
+            {
+                i.SetProperty("Microsoft.TeamFoundation.Identity.Image.Data", image);
+                i.SetProperty("Microsoft.TeamFoundation.Identity.Image.Type", "image/png");
+                i.SetProperty("Microsoft.TeamFoundation.Identity.Image.Id", Guid.NewGuid().ToByteArray());
+                i.SetProperty("Microsoft.TeamFoundation.Identity.CandidateImage.Data", null);
+                i.SetProperty("Microsoft.TeamFoundation.Identity.CandidateImage.UploadDate", null);
+
+                try
+                {
+                    this.identityManagementService.UpdateExtendedProperties(i);
+                }
+                catch (PropertyServiceException)
+                {
+                    // swallow; this exception happens each and every time, but the changes are applied :S.
+                }
+
+                message = "Profile image set";
+            }
+
+            return ret;
+        }
+
+        public bool ClearProfileImage(string identity, out string message)
+        {
+            bool ret = true;
+            message = string.Empty;
+
+            TeamFoundationIdentity i = this.identityManagementService.ReadIdentity(IdentitySearchFactor.AccountName, identity, MembershipQuery.Direct, ReadIdentityOptions.None);
+
+            if (i == null)
+            {
+                message = "User/Group [" + identity + "] not found";
+                ret = false;
+            }
+
+            if (ret)
+            {
+                i.SetProperty("Microsoft.TeamFoundation.Identity.Image.Data", null);
+                i.SetProperty("Microsoft.TeamFoundation.Identity.Image.Type", null);
+                i.SetProperty("Microsoft.TeamFoundation.Identity.Image.Id", null);
+                i.SetProperty("Microsoft.TeamFoundation.Identity.CandidateImage.Data", null);
+                i.SetProperty("Microsoft.TeamFoundation.Identity.CandidateImage.UploadDate", null);
+
+                try
+                {
+                    this.identityManagementService.UpdateExtendedProperties(i);
+                }
+                catch (PropertyServiceException)
+                {
+                    // swallow; this exception happens each and every time, but the changes are applied :S.
+                }
+
+                message = "Profile image cleared";
+            }
+
+            return ret;
+        }
+
+        public bool GroupToTeam(string group, string description, out string message)
+        {
+            var identity = this.identityManagementService.ReadIdentity(group);
+            bool ret = true;
+            message = string.Empty;
+
+            if (identity == null)
+            {
+                message = "Group [" + group + "] not found";
+                ret = false;
+            }
+
+            if (ret && !identity.IsActive)
+            {
+                message = "Group [" + group + "] is not active";
+                ret = false;
+            }
+
+            if (ret && !identity.IsContainer)
+            {
+                message = "Identity [" + group + "] is not a group";
+                ret = false;
+            }
+
+            TeamFoundationTeam t = this.teamService.ReadTeam(this.projectInfo.Uri, group, null);
+            if (t != null)
+            {
+                message = "Group [" + group + "] is already a team";
+                ret = false;
+            }
+
+            if (ret)
+            {
+                identity.SetProperty(IdentityPropertyScope.Local, "Microsoft.TeamFoundation.Team", (object)true);
+                this.identityManagementService.UpdateExtendedProperties(identity);
+
+                if (description != null)
+                {
+                    this.identityManagementService.UpdateApplicationGroup(identity.Descriptor, GroupProperty.Description, description);
+                }
+
+                message = "Group [" + group + "] converted to team.";
+            }
+
+            return ret;
+        }
+
+        private static byte[] ConvertAndResizeImage(byte[] bytes)
+        {
+            if ((bytes == null) || (bytes.Length < 1))
+            {
+                throw new ArgumentException("The file could not be found.");
+            }
+
+            if (bytes.Length > 0x400000)
+            {
+                throw new ArgumentException("The file is too large to be used as profile image.");
+            }
+
+            using (var imageStream = new MemoryStream(bytes))
+            using (Image image = Image.FromStream(imageStream))
+            {
+                int width = 0x90;
+                int height = 0x90;
+                if (image.Height > image.Width)
+                {
+                    width = (0x90 * image.Width) / image.Height;
+                }
+                else
+                {
+                    height = (0x90 * image.Height) / image.Width;
+                }
+
+                int x = (0x90 - width) / 2;
+                int y = (0x90 - height) / 2;
+                using (Bitmap bitmap = new Bitmap(0x90, 0x90))
+                {
+                    using (Graphics graphics = Graphics.FromImage(bitmap))
+                    {
+                        graphics.DrawImage(image, x, y, width, height);
+                    }
+
+                    using (MemoryStream stream = new MemoryStream())
+                    {
+                        bitmap.Save(stream, ImageFormat.Png);
+                        return stream.ToArray();
+                    }
+                }
+            }
         }
     }
 }

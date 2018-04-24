@@ -14,7 +14,28 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
         public static void Main(string[] args)
         {
 
-            CommandBase[] cmdList = new CommandBase[] {  new ShowUsageCommand(), new ListTeamCommand(), new CreateTeamCommand(), new DeleteTeamCommand(), new RenameTeamCommand(), new GetDefaultTeamCommand(), new SetDefaultTeamCommand(), new AddUserCommand(), new RemoveUserCommand(), new ListTeamMembersCommand(), new ListTeamAdminCommand(), new AddTeamAdminCommand(), new RemoveTeamAdminCommand() };
+            CommandBase[] cmdList =
+            {
+                new ShowUsageCommand(),
+                new ListTeamCommand(),
+                new CreateTeamCommand(),
+                new DeleteTeamCommand(),
+                new RenameTeamCommand(),
+                new GetDefaultTeamCommand(),
+                new SetDefaultTeamCommand(),
+                new AddUserCommand(),
+                new RemoveUserCommand(),
+                new ListTeamMembersCommand(),
+                new ListTeamAdminCommand(),
+                new AddTeamAdminCommand(),
+                new RemoveTeamAdminCommand(),
+                new ListTeamMembersCommand(),
+                new ClearProfileImageCommand(),
+                new SetProfileImageCommand(),
+                new ClearTeamImageCommand(),
+                new SetTeamImageCommand(),
+                new GroupToTeamCommand()
+            };
 
             if (args == null)
             {

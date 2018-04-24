@@ -15,6 +15,9 @@
       <word>RemoveTeamAdministrator</word>
     </Recognized>
   </Words>
+  <CompountWords>
+    <CompoundWord>CreateTeam</CompoundWord>
+  </CompountWords>
   <Acronyms>
     <CasingExceptions>
       <Acronym>ALM</Acronym>
