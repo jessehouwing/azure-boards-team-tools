@@ -8,7 +8,7 @@ It was put on-hold and sicne then Jesse Houwing has taken it under his wings.
 
 TfsTeams Command line tool
 
-A command line utility to manage TFS 2012 teams. Supports the following capabilities:
+A command line utility to manage TFS 2012+ and Azure DevOps (& Server 2019+) teams. Supports the following capabilities:
 
  - ListTeams
 - GetDefaultTeam
