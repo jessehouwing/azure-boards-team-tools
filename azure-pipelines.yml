@@ -39,7 +39,7 @@ steps:
       *.exe
       **/*.dll
       *.config
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)/'
 
 - task: TfxInstaller@2
   inputs:
@@ -48,7 +48,7 @@ steps:
 - task: ArchiveFiles@2
   inputs:
     rootFolderOrFile: '$(Build.ArtifactStagingDirectory)/'
-    includeRootFolder: true
+    includeRootFolder: false
     archiveType: 'zip'
     archiveFile: '$(zip)'
     replaceExistingArchive: true
