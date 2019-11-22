@@ -36,6 +36,8 @@ steps:
     Contents: |
       *.pdb
       *.exe
+      **/*.dll
+      *.config
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: TfxInstaller@2
