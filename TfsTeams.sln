@@ -1,18 +1,16 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TfsTeams", "TfsTeams CmdLine\TfsTeams.csproj", "{13B4FC3E-BFF3-4242-9961-F266F5B4A604}"
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29519.87
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TfsTeams", "TfsTeams CmdLine\TfsTeams.csproj", "{13B4FC3E-BFF3-4242-9961-F266F5B4A604}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3AEF9A54-F326-4140-9CE6-B911E140BC46}"
+	ProjectSection(SolutionItems) = preProject
+		azure-pipelines.yaml = azure-pipelines.yaml
+	EndProjectSection
 EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccLocalPath0 = .
-		SccLocalPath1 = TfsTeams\u0020CmdLine
-		SccNumberOfProjects = 2
-		SccProjectName1 = TfsTeams\u0020CmdLine
-		SccProjectUniqueName1 = TfsTeams\u0020CmdLine\\TfsTeams.csproj
-		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs01
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -25,5 +23,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B05351E4-A704-4D17-AA3F-E734CC31C05D}
 	EndGlobalSection
 EndGlobal

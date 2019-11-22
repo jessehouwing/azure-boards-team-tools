@@ -1,0 +1,77 @@
+# .NET Desktop
+# Build and run tests for .NET Desktop or Windows classic desktop solutions.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/apps/windows/dot-net
+
+name: 1.0$(Rev:.r)
+
+trigger:
+- master
+
+pool:
+  name: 'default'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'Any CPU'
+  buildConfiguration: 'Release'
+  vsix: '$(Build.ArtifactStagingDirectory)/vsix/azure-boards-team-tools-$(Build.BuildNumber).vsix'
+
+steps:
+- task: NuGetToolInstaller@1
+
+- task: NuGetCommand@2
+  inputs:
+    restoreSolution: '$(solution)'
+
+- task: VSBuild@1
+  inputs:
+    solution: '$(solution)'
+    platform: '$(buildPlatform)'
+    configuration: '$(buildConfiguration)'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(Build.SourcesDirectory)/bin/$(buildConfiguration)/net472/'
+    Contents: |
+      *.pdb
+      *.exe
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+- task: TfxInstaller@2
+  inputs:
+    version: 'v0.7.x'
+
+- task: PackageAzureDevOpsExtension@2
+  inputs:
+    rootFolder: '$(Build.SourcesDirectory)'
+    outputPath: '$(vsix)'
+    extensionVersion: '$(Build.BuildNumber)'
+    updateTasksVersion: false
+
+- task: PublishAzureDevOpsExtension@2
+  inputs:
+    connectTo: 'VsTeam'
+    connectedServiceName: 'Jesse Houwing'
+    fileType: 'vsix'
+    vsixFile: '$(vsix)'
+    updateTasksVersion: false
+    noWaitValidation: true
+
+- task: PublishPipelineArtifact@1
+  inputs:
+    targetPath: '$(Build.ArtifactStagingDirectory)'
+    artifact: 'Output'
+
+- task: GitHubRelease@1
+  inputs:
+    gitHubConnection: 'GitHub - jessehouwing'
+    repositoryName: '$(Build.Repository.Name)'
+    action: 'create'
+    target: '$(Build.SourceVersion)'
+    tagSource: 'userSpecifiedTag'
+    tag: '$(Build.BuildNumber)'
+    title: '$(Build.BuildNumber)'
+    releaseNotesSource: 'inline'
+    changeLogCompareToRelease: 'lastFullRelease'
+    changeLogType: 'commitBased'
