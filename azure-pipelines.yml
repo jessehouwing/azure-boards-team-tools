@@ -16,6 +16,7 @@ variables:
   buildPlatform: 'Any CPU'
   buildConfiguration: 'Release'
   vsix: '$(Build.ArtifactStagingDirectory)/vsix/azure-boards-team-tools-$(Build.BuildNumber).vsix'
+  zip: '$(Build.ArtifactStagingDirectory)/zip/azure-boards-team-tools-$(Build.BuildNumber).zip'
 
 steps:
 - task: NuGetToolInstaller@1
@@ -43,6 +44,14 @@ steps:
 - task: TfxInstaller@2
   inputs:
     version: 'v0.7.x'
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
+    includeRootFolder: true
+    archiveType: 'zip'
+    archiveFile: '$(zip)'
+    replaceExistingArchive: true
 
 - task: PackageAzureDevOpsExtension@2
   inputs:
@@ -75,5 +84,6 @@ steps:
     tag: '$(Build.BuildNumber)'
     title: '$(Build.BuildNumber)'
     releaseNotesSource: 'inline'
+    assets: '$(Build.ArtifactStagingDirectory)/zip/*'
     changeLogCompareToRelease: 'lastFullRelease'
     changeLogType: 'commitBased'
