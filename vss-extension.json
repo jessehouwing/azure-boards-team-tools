@@ -1,0 +1,80 @@
+{
+  "manifestVersion": 1,
+  "id": "azure-boards-teams-tool",
+  "name": "Azure Boards Teams Tool CLI",
+  "description": "Manage Azure Boads teams from the CLI.",
+  "version": "1.0.0",
+  "public": true,
+  "publisher": "jessehouwing",
+  "galleryFlags": [
+    "preview"
+  ],
+  "targets": [
+    {
+      "id": "Microsoft.VisualStudio.Services.Integration",
+      "version": "[11.0,)"
+    }
+  ],
+  "categories": [
+    "Azure Boards"
+  ],
+  "tags": [
+    "CLI"
+  ],
+  "links": {
+    "home": {
+      "uri": "https://github.com/jessehouwing/azure-boards-team-tools"
+    },
+    "getstarted": {
+      "uri": "https://github.com/jessehouwing/azure-boards-team-tools/releases/latest"
+    },
+    "learn": {
+      "uri": "https://github.com/jessehouwing/azure-boards-team-tools/README.md"
+    },
+    "support": {
+      "uri": "https://github.com/jessehouwing/azure-boards-team-tools/issues"
+    },
+    "repository": {
+      "uri": "https://github.com/jessehouwing/azure-boards-team-tools"
+    },
+    "issues": {
+      "uri": "https://github.com/jessehouwing/azure-boards-team-tools/issues"
+    },
+    "license": {
+      "uri": "https://github.com/jessehouwing/azure-boards-team-tools/LICENSE.md"
+    },
+    "privacypolicy": {
+      "uri": "https://github.com/jessehouwing/azure-boards-team-tools/blob/master/PRIVACY.md"
+    }
+  },
+  "CustomerQnASupport": {
+    "enableqna": "true",
+    "url": "https://github.com/jessehouwing/azure-boards-team-tools/issues"
+  },
+  "badges": [
+  ],
+  "repository": {
+    "type": "git",
+    "uri": "https://github.com/jessehouwing/azure-boards-team-tools.git"
+  },
+  "icons": {
+    "default": "extension-icon.png"
+  },
+  "branding": {
+    "color": "#1E1E1E",
+    "theme": "dark"
+  },
+  "content": {
+    "details": {
+      "path": "README.md"
+    },
+    "license": {
+      "path": "LICENSE.md"
+    },
+    "privacy": {
+      "path": "PRIVACY.md"
+    }
+  },
+  "files": [
+  ]
+}

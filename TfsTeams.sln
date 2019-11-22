@@ -8,6 +8,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3AEF9A54-F326-4140-9CE6-B911E140BC46}"
 	ProjectSection(SolutionItems) = preProject
 		azure-pipelines.yaml = azure-pipelines.yaml
+		extension-icon.png = extension-icon.png
+		extension-icon.psd = extension-icon.psd
+		LICENSE.md = LICENSE.md
+		PRIVACY.md = PRIVACY.md
+		README.md = README.md
+		vss-extension.json = vss-extension.json
 	EndProjectSection
 EndProject
 Global

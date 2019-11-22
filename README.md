@@ -19,9 +19,9 @@ A command line utility to manage TFS 2012+ and Azure DevOps (& Server 2019+) tea
 - ListTeamMembers
 - AddUser
 - RemoveUser
-- [Set/Clear User/Team profile image](http://blog.jessehouwing.nl/2013/01/set-your-tfs-profile-or-team-image-from.html)
-- [Convert Group to Team](http://blog.jessehouwing.nl/2013/02/converting-group-to-team-in-tfs-2012.html)
-- [List Team Administrators](https://web.archive.org/web/20130525090409/http://blog.johnsworkshop.net/tfs11-api-managing-team-administrators/)
+- [Set/Clear User/Team profile image](https://blog.jessehouwing.nl/2013/01/set-your-tfs-profile-or-team-image-from.html)
+- [Convert Group to Team](http://blogs.jessehouwing.nl/2013/02/converting-group-to-team-in-tfs-2012.html)
+- [List Team Administrators](httpss://web.archive.org/web/20130525090409/http://blog.johnsworkshop.net/tfs11-api-managing-team-administrators/)
 - AddTeamAdministrator
 - RemoveTeamAdministrator
 
