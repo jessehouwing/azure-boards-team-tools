@@ -6,7 +6,7 @@
 name: 1.7$(Rev:.r)
 
 trigger:
-- master
+- main
 
 pool:
   name: 'default'
