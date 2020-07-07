@@ -2,7 +2,7 @@
   "manifestVersion": 1,
   "id": "azure-boards-teams-tool",
   "name": "Azure Boards Teams Tool CLI",
-  "description": "Manage Azure Boads teams from the CLI.",
+  "description": "Manage Azure Boards teams from the CLI.",
   "version": "1.0.0",
   "public": true,
   "publisher": "jessehouwing",
