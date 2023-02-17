@@ -1,5 +1,5 @@
 ﻿// Copyright © Microsoft Corporation.  All Rights Reserved.
-// This code released under the terms of the 
+// This code released under the terms of the
 // Microsoft Public License (MS-PL, http://opensource.org/licenses/ms-pl.html.)
 // This is sample code only, do not use in production environments
 namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
@@ -7,6 +7,7 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using static CommunityTfsTeamTools.TfsTeams.TfsTeams.TeamWrapper;
 
     public class CommandBase
     {
@@ -170,7 +171,7 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
         {
             this.CommandName = "DeleteTeam";
             this.expectedArguments = new[] { "Collection", "TeamProject", "Team" };
-            
+
         }
 
         public override void Run()
@@ -277,7 +278,29 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
             using (TeamWrapper team = new TeamWrapper(new Uri(this.GetArgument("Collection")), GetArgument("TeamProject")))
             {
                 string message;
-                team.GroupToTeam(this.GetArgument("Group"), this.GetArgument("Description"), out message);
+                team.ConvertGroup(this.GetArgument("Group"), this.GetArgument("Description"), ConversionKind.GroupToTeam, out message);
+
+                Console.WriteLine(message);
+            }
+        }
+    }
+
+
+    public class TeamToGroupCommand : CommandBase
+    {
+        public TeamToGroupCommand()
+        {
+            this.CommandName = "TeamToGroup";
+            this.expectedArguments = new[] { "Collection", "TeamProject", "Team" };
+            this.optionalArguments = new[] { "Description" };
+        }
+
+        public override void Run()
+        {
+            using (TeamWrapper team = new TeamWrapper(new Uri(this.GetArgument("Collection")), GetArgument("TeamProject")))
+            {
+                string message;
+                team.ConvertGroup(this.GetArgument("Team"), this.GetArgument("Description"), ConversionKind.TeamToGroup, out message);
 
                 Console.WriteLine(message);
             }
@@ -546,7 +569,9 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
             Console.WriteLine(@"       TfsTeams CreateTeam /Team:<teamname> [/Description:<description>] /collection:<collectionurl> /teamproject:<teamprojectname>");
             Console.WriteLine(@"       TfsTeams DeleteTeam /Team:<teamname> /collection:<collectionurl> /teamproject:<teamprojectname>");
             Console.WriteLine(@"       TfsTeams RenameTeam /Team:<teamname> /NewTeamName:<newteamname> [/NewDescription:<description>] /collection:<collectionurl> /teamproject:<teamprojectname>");
-            Console.WriteLine(@"       TfsTeams GroupToTeam /Group:<teamname> [/Description:<description>] /collection:<collectionurl> /teamproject:<teamprojectname>");
+            Console.WriteLine("");
+            Console.WriteLine(@"       TfsTeams GroupToTeam /Group:<teamname> /collection:<collectionurl> /teamproject:<teamprojectname>");
+            Console.WriteLine(@"       TfsTeams TeamToGroup /Team:<teamname> /collection:<collectionurl> /teamproject:<teamprojectname>");
             Console.WriteLine("");
             Console.WriteLine(@"       TfsTeams GetDefaultTeam /collection:<collectionurl> /teamproject:<teamprojectname>");
             Console.WriteLine(@"       TfsTeams SetDefaultTeam /Team:<teamname>  /collection:<collectionurl> /teamproject:<teamprojectname>");

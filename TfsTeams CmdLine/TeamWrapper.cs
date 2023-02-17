@@ -1,5 +1,5 @@
 ﻿// Copyright © Microsoft Corporation.  All Rights Reserved.
-// This code released under the terms of the 
+// This code released under the terms of the
 // Microsoft Public License (MS-PL, http://opensource.org/licenses/ms-pl.html.)
 // This is sample code only, do not use in production environments
 
@@ -18,7 +18,7 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
     using Microsoft.TeamFoundation.Framework.Common;
     using Microsoft.TeamFoundation.Server;
 
-    internal class TeamWrapper : IDisposable
+    internal partial class TeamWrapper : IDisposable
     {
         private readonly TfsTeamProjectCollection teamProjectCollection;
         private readonly TfsTeamService teamService;
@@ -85,7 +85,7 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
             if (t == null)
             {
                 message = "No default team found ";
-                
+
             }
             else
             {
@@ -109,7 +109,7 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
                 ret = false;
             }
 
-          
+
 
             if (ret)
             {
@@ -149,7 +149,7 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
                 if (newDescription != null)
                 {
                     this.identityManagementService.UpdateApplicationGroup(t.Identity.Descriptor, GroupProperty.Description, newDescription);
-                } 
+                }
 
                 message = "Team renamed ";
             }
@@ -172,11 +172,11 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
 
             if (ret)
             {
-                this.identityManagementService.DeleteApplicationGroup(t.Identity.Descriptor); 
+                this.identityManagementService.DeleteApplicationGroup(t.Identity.Descriptor);
                 message = "Team deleted ";
             }
 
-            
+
 
             return ret;
         }
@@ -488,7 +488,7 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
             return ret;
         }
 
-        public bool GroupToTeam(string group, string description, out string message)
+        public bool ConvertGroup(string group, string description, ConversionKind kind, out string message)
         {
             var identity = this.identityManagementService.ReadIdentity(group);
             bool ret = true;
@@ -521,7 +521,7 @@ namespace CommunityTfsTeamTools.TfsTeams.TfsTeams
 
             if (ret)
             {
-                identity.SetProperty(IdentityPropertyScope.Local, "Microsoft.TeamFoundation.Team", (object)true);
+                identity.SetProperty(IdentityPropertyScope.Local, "Microsoft.TeamFoundation.Team", (object)(kind == ConversionKind.GroupToTeam));
                 this.identityManagementService.UpdateExtendedProperties(identity);
 
                 if (description != null)
