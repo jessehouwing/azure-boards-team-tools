@@ -33,7 +33,7 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    SourceFolder: '$(Build.SourcesDirectory)/TfsTeams CmdLine/bin/$(buildConfiguration)/net472/'
+    SourceFolder: '$(Build.SourcesDirectory)/TfsTeams CmdLine/bin/$(buildConfiguration)/net48/'
     Contents: |
       *.pdb
       *.exe
