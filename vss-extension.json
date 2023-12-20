@@ -51,8 +51,6 @@
     "enableqna": "true",
     "url": "https://github.com/jessehouwing/azure-boards-team-tools/issues"
   },
-  "badges": [
-  ],
   "repository": {
     "type": "git",
     "uri": "https://github.com/jessehouwing/azure-boards-team-tools.git"
