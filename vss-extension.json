@@ -16,7 +16,8 @@
     }
   ],
   "categories": [
-    "Azure Boards"
+    "Azure Boards",
+    "xebia"
   ],
   "tags": [
     "CLI"
