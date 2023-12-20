@@ -57,6 +57,13 @@
     "type": "git",
     "uri": "https://github.com/jessehouwing/azure-boards-team-tools.git"
   },
+  "badges": [
+    {
+      "href": "https://github.com/sponsors/jessehouwing",
+      "uri": "https://img.shields.io/github/sponsors/jessehouwing",
+      "description": "GitHub Sponsors"
+    }
+  ],
   "icons": {
     "default": "extension-icon.png"
   },
