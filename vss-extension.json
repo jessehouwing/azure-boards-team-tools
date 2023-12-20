@@ -16,11 +16,10 @@
     }
   ],
   "categories": [
-    "Azure Boards",
-    "xebia"
+    "Azure Boards"
   ],
   "tags": [
-    "CLI"
+    "CLI", "xebia"
   ],
   "links": {
     "home": {
