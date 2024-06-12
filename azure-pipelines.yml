@@ -12,7 +12,6 @@ variables:
   buildConfiguration: 'Release'
   vsix: '$(Build.ArtifactStagingDirectory)/vsix/azure-boards-team-tools-$(Build.BuildNumber).vsix'
   zip: '$(Build.ArtifactStagingDirectory)/zip/azure-boards-team-tools-$(Build.BuildNumber).zip'
-  marketplaceServiceConnection: '24325a98-0d4b-4180-9936-c930a4156258' 
 
 steps:
 - task: NuGetToolInstaller@1
@@ -37,7 +36,7 @@ steps:
       *.config
     TargetFolder: '$(Build.ArtifactStagingDirectory)/'
 
-- task: TfxInstaller@4
+- task: TfxInstaller@5
   inputs:
     version: 'v0.x'
 
@@ -49,29 +48,17 @@ steps:
     archiveFile: '$(zip)'
     replaceExistingArchive: true
 
-- task: PackageAzureDevOpsExtension@4
+- task: PackageAzureDevOpsExtension@5
   inputs:
     rootFolder: '$(Build.SourcesDirectory)'
     outputPath: '$(vsix)'
     extensionVersion: '$(Build.BuildNumber)'
     updateTasksVersion: false
 
-- task: AzureCLI@2
-  displayName: 'Authenticate with Service Principal'
+- task: PublishAzureDevOpsExtension@5
   inputs:
-    azureSubscription: 'azure-devops-marketplace'
-    scriptType: 'pscore'
-    scriptLocation: 'inlineScript'
-    useGlobalConfig: true
-    inlineScript: |
-      $accessToken = az account get-access-token --resource 499b84ac-1321-427f-aa17-267ca6975798 --query "accessToken" --output tsv
-      write-host "##vso[task.setsecret]$accessToken"
-      write-host "##vso[task.setendpoint id=$env:MARKETPLACESERVICECONNECTION;field=authParameter;key=password]$accessToken"
-
-- task: PublishAzureDevOpsExtension@4
-  inputs:
-    connectTo: 'VsTeam'
-    connectedServiceName: $(marketplaceServiceConnection)
+    connectTo: 'AzureRM'
+    connectedServiceNameAzureRM: azure-devops-marketplace
     fileType: 'vsix'
     vsixFile: '$(vsix)'
     updateTasksVersion: false
