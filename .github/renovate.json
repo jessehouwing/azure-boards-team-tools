@@ -6,6 +6,15 @@
   "azure-pipelines": {
     "enabled": true
   },
+  "github-actions": {
+    "enabled": false
+  },
+  "nuget": {
+    "enabled": false
+  },
+  "pip_requirements": {
+    "enabled": false
+  },
   "packageRules": [
     {
       "matchDatasources": ["azure-pipelines-tasks"],
