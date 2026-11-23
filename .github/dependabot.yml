@@ -6,15 +6,36 @@ updates:
       interval: weekly
     cooldown:
       default-days: 7
+    groups:
+      github-actions-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
   - package-ecosystem: pip
     directory: /
     schedule:
       interval: weekly
     cooldown:
       default-days: 7
+    groups:
+      pip-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
   - package-ecosystem: nuget
     directory: /TfsTeams CmdLine
     schedule:
       interval: weekly
     cooldown:
       default-days: 7
+    groups:
+      nuget-minor-patch:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
